@@ -1,5 +1,5 @@
 from typing import List
-
+import uvicorn
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -9,10 +9,8 @@ import models, schemas
 from database import SessionLocal, engine
 import datetime
 
-# models.Base.metadata.create_all(bind=engine)
-
+models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -51,16 +49,21 @@ def add_records(records:Record,db: Session = Depends(get_db)):
     recoveries=records.recoveries,
    )
     db.add(db_record)
-
     db.commit()
-
     db.close()
 
     return {"message": "Data Saved Successfully"}
 
-@app.get("/record/")
-def get_records(db:Session = Depends(get_db)) -> schemas.Record:
-    print("----------------------------------------------------------------")
+@app.get("/record/{id_no}")
+def get_records(id_no,db:Session = Depends(get_db)) -> schemas.Record:
+    print(id_no)
     
-    db_record = db.query(models.Record).filter(models.Record.id == "1").all()
-    return db_record
+    db_record = db.query(models.Record).filter(models.Record.id == id_no).all()
+    if db_record:
+        return db_record
+    raise HTTPException(status_code=404,detail="Item not found")
+
+
+
+if __name__ == '__main__':
+    uvicorn.run(app, host='0.0.0.0', port=8000)

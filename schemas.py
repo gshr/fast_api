@@ -3,7 +3,6 @@ from pydantic import BaseModel
 
 
 class Record(BaseModel):
-    id: int
     date: date
     country: str
     cases: int
