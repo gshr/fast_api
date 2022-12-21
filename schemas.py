@@ -11,3 +11,14 @@ class Record(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class Products(BaseModel):
+    id: int
+    name: str
+    price: int
+    inventory: int
+    is_sale: bool
+
+    class Config:
+        orm_mode = True
