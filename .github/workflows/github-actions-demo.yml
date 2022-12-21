@@ -25,4 +25,4 @@ jobs:
 
       - name: Unit Testing with pytest
         run: |
-          pytest test.py
+          pytest async-test.py
